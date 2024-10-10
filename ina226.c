@@ -45,7 +45,7 @@ ina226_status ina226_set_cal_reg(ina226_handle *ina226)
 	uint16_t calibration_val = CAL_FINAL;
 	cal_reg_data[0] = (calibration_val & 0xff00) >> 8;
 	cal_reg_data[1] = calibration_val & 0x00ff;
-
+	
 	if (HAL_I2C_Mem_Write(ina226->hi2c1, INA226_I2C_ADDRESS, (uint16_t) CAL_REG, 1, cal_reg_data, 2, 100) != HAL_OK)
 	{
 		return INA_STATUS_I2C_FAIL;
@@ -104,16 +104,16 @@ float ina226_current_via_reg(ina226_handle *ina226)
 //	refer page 16
 float ina226_power_via_reg(ina226_handle *ina226)
 {
-		uint8_t power_reg_data[2];
-		int16_t raw_power;
-
-		if (HAL_I2C_Mem_Read(ina226->hi2c1, INA226_I2C_ADDRESS, (uint16_t)POWER_REG, 1, power_reg_data, 2, 100) != HAL_OK)
-		{
-		    return INA_STATUS_I2C_FAIL;
-		}
-
-		raw_power = (int16_t)((power_reg_data[0] << 8) | power_reg_data[1]);
-
-		return raw_power * POWER_LSB;
+	uint8_t power_reg_data[2];
+	int16_t raw_power;
+	
+	if (HAL_I2C_Mem_Read(ina226->hi2c1, INA226_I2C_ADDRESS, (uint16_t)POWER_REG, 1, power_reg_data, 2, 100) != HAL_OK)
+	{
+	    return INA_STATUS_I2C_FAIL;
+	}
+	
+	raw_power = (int16_t)((power_reg_data[0] << 8) | power_reg_data[1]);
+	
+	return raw_power * POWER_LSB;
 }
 
