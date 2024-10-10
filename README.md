@@ -46,7 +46,9 @@ while (1)
 # Disclaimer
 This code was written fast for basic initialation, usage and testing of a module i had with this IC. An issue i noticed after some testing was that the current measurement was +10-15mA off the correct value. I don't know if that flactuation is within the ICs specification or it is an issue with the module i have. The module i am using is the INA226 CJMCU-226 IIC from aliexpress. 
 
-*Please* if you find any issues on the code or you want to add code for the stuff i haven't included (like alarm etc.), feel free to raise an issue with a PR so i can test the code and merge it. *Thanks in advance*
+**Please** if you find any issues on the code or you want to add code for the stuff i haven't included (like alarm etc.), feel free to raise an issue with a PR so i can test the code and merge it. 
+
+**Thanks in advance**
 
 # License
 This driver is provided under the MIT License.
