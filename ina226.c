@@ -117,3 +117,21 @@ float ina226_power_via_reg(ina226_handle *ina226)
 	return raw_power * POWER_LSB;
 }
 
+// Used in polling mode to check if conversion is ready so you make the register read only then.
+ina226_status check_if_conversion_ready(ina226_handle *ina226)
+{
+		uint8_t mask_reg_data[2];
+		uint16_t conversion_ready = 0;
+
+		if (HAL_I2C_Mem_Read(ina226->hi2c1, INA226_I2C_ADDRESS, (uint16_t)MASK_EN_REG, 1, mask_reg_data, 2, 100) != HAL_OK)
+		{
+		    return INA_STATUS_I2C_FAIL;
+		}
+
+		conversion_ready = (int16_t)(((mask_reg_data[0] << 8) | mask_reg_data[1]) & 0x0008);
+		if (conversion_ready)
+		{
+			return INA_CONVERSION_READY;
+		}
+		return INA_CONVERSION_NOT_READY;
+}

@@ -85,7 +85,7 @@
 #define RESET_ENABLE				(0x0001 <<15)
 
 //	Mask that on the value read by MASK_EN_REG to check when all measurements/calculations are ready
-#define	CONVERSION_READY_FLG_MASK 	(0x0001 << 10)
+#define	CONVERSION_READY_FLG_MASK 	(0x0008)
 
 //	1 LSB step size for adc readings in bus measurement to get voltage(page 5)
 #define	BUS_VOL_STEP_VALUE			0.00125
@@ -94,7 +94,9 @@ typedef enum
 {
 	INA_STATUS_OK,
 	INA_STATUS_I2C_FAIL,
-	INA_STATUS_TIMEOUT
+	INA_STATUS_TIMEOUT,
+	INA_CONVERSION_NOT_READY,
+	INA_CONVERSION_READY,
 }ina226_status;
 
 typedef struct{
@@ -104,6 +106,7 @@ typedef struct{
 
 ina226_status ina226_init(ina226_handle *ina226, I2C_HandleTypeDef *hi2c1, uint16_t configuration);
 ina226_status ina226_set_cal_reg(ina226_handle *ina226);
+ina226_status check_if_conversion_ready(ina226_handle *ina226);
 
 uint16_t ina226_read_raw_shunt_voltage(ina226_handle *ina226);
 uint16_t ina226_read_raw_bus_voltage(ina226_handle *ina226);

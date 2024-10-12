@@ -6,10 +6,12 @@ This repository provides a basic firmware driver for the **INA226** power monito
 
 - In the code below you can find the basic initialization of the the INA226 handle struct and how to get the basic measurements like current, power and bus voltage using the internal registers. Please take into account your desired conversion times since if you read registers before adc conversion is finished you are going to read the previous value. I you want to read the measurement when it is available implement tick delay mechanism considering your application conversion times
 
+- **Update:** I have added a conversion check function that reads the mask register and masks for the conversion ready bit. So read measurement values when conversion bit is set. On flag bit read the bit is reset automatically by the IC.
+
 ```c
 /* Initialize INA226 */
 ina226_handle ina226;
-(&ina226, &hi2c1, V_BUS_2_116ms | V_SHUNT_2_116ms | CONTINUOUS_MODE_ALL);
+ina226_init(&ina226, &hi2c1, V_BUS_2_116ms | V_SHUNT_2_116ms | CONTINUOUS_MODE_ALL);
 
 /* Set calibration register */
 ina226_set_cal_reg(&ina226);
@@ -17,9 +19,14 @@ ina226_set_cal_reg(&ina226);
 /* Infinite loop to read data */
 while (1)
 {
-    float current = ina226_current_via_reg(&ina226);
-    float bus_voltage = ina226_read_bus_voltage(&ina226);
-    float power = ina226_power_via_reg(&ina226);
+    if (check_if_conversion_ready(&ina226) == INA_CONVERSION_READY)
+    {
+        float current = ina226_current_via_reg(&ina226);
+        float bus_voltage = ina226_read_bus_voltage(&ina226);
+        float power = ina226_power_via_reg(&ina226);
+    }
+
+    HAL_Delay(500);
     // Use the values as needed
 }
 ```
